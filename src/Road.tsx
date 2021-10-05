@@ -1,3 +1,7 @@
+import { useLoader } from "@react-three/fiber";
+import { RepeatWrapping } from "three";
+import { TextureLoader } from "three/src/loaders/TextureLoader";
+
 function Road(props: any) {
   const points = props.road.points;
   const divisionSize = props.divisionSize;
@@ -10,6 +14,21 @@ function Road(props: any) {
   const y = sortedY[1] + 1;
   const h = sortedY[1] - sortedY[0] + 1;
 
+  const texture = useLoader(
+    TextureLoader,
+    props.road.oneWay ? ((h > w) ? (points[0][1] > points[1][1] ? "down-chevron.png" : "up-chevron.png") : points[0][0] > points[1][0] ? "left-chevron.png" : "right-chevron.png") : h > w ? "vertical-two-way.png" : "horizontal-two-way.png"
+  );
+
+  if (texture) {
+    texture.wrapS = texture.wrapT = RepeatWrapping;
+    if (h > w) {
+      texture.repeat.set(1, h);
+    } else {
+      texture.repeat.set(w, 1);
+    }
+    texture.anisotropy = 16;
+  }
+
   return (
     <group>
       <mesh
@@ -20,7 +39,7 @@ function Road(props: any) {
         ]}
       >
         <boxGeometry args={[w * divisionSize, h * divisionSize, 0.001]} />
-        <meshStandardMaterial color={0x252a30} />
+        <meshStandardMaterial map={texture} />
       </mesh>
     </group>
   );
