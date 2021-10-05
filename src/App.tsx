@@ -1,11 +1,12 @@
 import "./App.css";
 import { Canvas } from "@react-three/fiber";
 import Floor from "./Floor";
-import { Suspense, useState } from "react";
+import { Suspense, useRef, useState } from "react";
 import { roads, junctions, generateGraph } from "./roads";
 import Road from "./Road";
 import Junction from "./Junction";
 import Context from "./context/Context";
+import { PerspectiveCamera, OrbitControls } from "@react-three/drei";
 
 function App() {
   const size = 7;
@@ -42,10 +43,14 @@ function App() {
     }
   };
 
+  const myCamera = useRef();
+
   return (
     <div className="App">
       <div className="w-full h-screen">
         <Canvas className="w-full">
+          <PerspectiveCamera ref={myCamera} position={[0, 5, 5]} />
+          <OrbitControls camera={myCamera.current} />
           <Suspense fallback={null}>
             <Context.Provider
               value={{

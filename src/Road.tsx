@@ -106,11 +106,23 @@ function Road(props: any) {
         position={[
           (x - w / 2 - 1 / 2) * divisionSize,
           (y - h / 2 - 1 / 2) * divisionSize,
-          0,
+          0.036,
         ]}
       >
-        <boxGeometry args={[w * divisionSize, h * divisionSize, 0.001]} />
+        <boxGeometry args={[w * divisionSize, h * divisionSize, 0.05]} />
         <meshStandardMaterial map={texture} />
+      </mesh>
+      <mesh
+        position={[
+          (x - w / 2 - 1 / 2) * divisionSize,
+          (y - h / 2 - 1 / 2) * divisionSize,
+          0.035,
+        ]}
+      >
+        <boxGeometry
+          args={[w * divisionSize + 0.01, h * divisionSize + 0.01, 0.051]}
+        />
+        <meshStandardMaterial color={0x888888} />
       </mesh>
     </group>
   );
