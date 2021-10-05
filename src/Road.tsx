@@ -5,6 +5,7 @@ import { TextureLoader } from "three/src/loaders/TextureLoader";
 function Road(props: any) {
   const points = props.road.points;
   const divisionSize = props.divisionSize;
+  const oneWay = props.road.oneWay;
 
   const sortedX = points.map((x: any) => x[0]).sort((a: any, b: any) => a - b);
   const x = sortedX[1] + 1;
@@ -14,17 +15,31 @@ function Road(props: any) {
   const y = sortedY[1] + 1;
   const h = sortedY[1] - sortedY[0] + 1;
 
-  const texture = useLoader(
-    TextureLoader,
-    props.road.oneWay ? ((h > w) ? (points[0][1] > points[1][1] ? "down-chevron.png" : "up-chevron.png") : points[0][0] > points[1][0] ? "left-chevron.png" : "right-chevron.png") : h > w ? "vertical-two-way.png" : "horizontal-two-way.png"
-  );
+  const isVertical = h > w;
+  const isPointingUp = points[0][1] < points[1][1];
+  const isPointingRight = points[0][0] < points[1][0];
+
+  const chevron = oneWay
+    ? isVertical
+      ? isPointingUp
+        ? "up"
+        : "down"
+      : isPointingRight
+      ? "right"
+      : "left"
+    : isVertical
+    ? "vertical"
+    : "horizontal";
+
+  const texture = useLoader(TextureLoader, `/img/chevron-${chevron}.png`);
 
   if (texture) {
-    texture.wrapS = texture.wrapT = RepeatWrapping;
     if (h > w) {
       texture.repeat.set(1, h);
+      texture.wrapT = RepeatWrapping;
     } else {
       texture.repeat.set(w, 1);
+      texture.wrapS = RepeatWrapping;
     }
     texture.anisotropy = 16;
   }
