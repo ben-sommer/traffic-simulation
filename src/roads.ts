@@ -1,8 +1,6 @@
 const Graph = require("graph-data-structure");
 
-const graph = new Graph();
-
-const roads = [
+export const roads = [
   {
     points: [
       [-16, -16],
@@ -47,8 +45,8 @@ const roads = [
   },
   {
     points: [
-      [-12, 0],
       [0, 0],
+      [-12, 0],
     ],
     oneWay: true,
   },
@@ -147,7 +145,7 @@ const getLength = (points: any) => {
   return Math.max(w, h);
 };
 
-const junctions = [
+export const junctions = [
   // @ts-ignore
   ...new Set(
     [].concat
@@ -156,28 +154,25 @@ const junctions = [
   ),
 ];
 
-junctions.forEach((x) => graph.addNode(x));
+export const generateGraph = (roads: any, junctions: any) => {
+  const graph = new Graph();
 
-roads.forEach((x: any) => {
-  graph.addEdge(
-    x.points[0].join(","),
-    x.points[1].join(","),
-    getLength(x.points)
-  );
-  if (!x.oneWay) {
+  junctions.forEach((x: any) => graph.addNode(x));
+
+  roads.forEach((x: any) => {
     graph.addEdge(
-      x.points[1].join(","),
       x.points[0].join(","),
+      x.points[1].join(","),
       getLength(x.points)
     );
-  }
-});
+    if (!x.oneWay) {
+      graph.addEdge(
+        x.points[1].join(","),
+        x.points[0].join(","),
+        getLength(x.points)
+      );
+    }
+  });
 
-console.log(graph.serialize());
-try {
-  console.log(graph.shortestPath("-16,-16", "0,0"));
-} catch (e) {
-  console.log("No route found");
-}
-
-export default roads;
+  return graph;
+};

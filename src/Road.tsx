@@ -1,6 +1,8 @@
 import { useLoader } from "@react-three/fiber";
+import { useContext, useMemo } from "react";
 import { RepeatWrapping } from "three";
 import { TextureLoader } from "three/src/loaders/TextureLoader";
+import Context from "./context/Context";
 
 function Road(props: any) {
   const points = props.road.points;
@@ -19,19 +21,75 @@ function Road(props: any) {
   const isPointingUp = points[0][1] < points[1][1];
   const isPointingRight = points[0][0] < points[1][0];
 
+  const state = useContext(Context);
+
+  const routeRoads = state.route
+    ? state.route.slice(0, -1).map((x, i) => [x, state.route[i + 1]].join(","))
+    : null;
+
+  const routeSection = routeRoads
+    ? routeRoads.find(
+        (x) =>
+          x === points.map((x: any) => x.join(",")).join(",") ||
+          x ===
+            points
+              .map((x: any) => x.join(","))
+              .reverse()
+              .join(",")
+      ) || null
+    : null;
+
+  const routeSectionInts = routeSection
+    ? [
+        [routeSection?.split(",")[0], routeSection?.split(",")[1]],
+        [routeSection?.split(",")[2], routeSection?.split(",")[3]],
+      ].map((x: any) => x.map((x: any) => parseInt(x)))
+    : null;
+
+  const isRoutePointingUp = routeSectionInts
+    ? routeSectionInts[0][1] < routeSectionInts[1][1]
+    : null;
+  const isRoutePointingRight = routeSectionInts
+    ? routeSectionInts[0][0] < routeSectionInts[1][0]
+    : null;
+
+  if (routeSectionInts) console.log(routeSectionInts);
+
   const chevron = oneWay
     ? isVertical
       ? isPointingUp
-        ? "up"
+        ? routeSection
+          ? "up-blue"
+          : "up"
+        : routeSection
+        ? "down-blue"
         : "down"
       : isPointingRight
-      ? "right"
+      ? routeSection
+        ? "right-blue"
+        : "right"
+      : routeSection
+      ? "left-blue"
       : "left"
     : isVertical
-    ? "vertical"
+    ? routeSection
+      ? isRoutePointingUp
+        ? "vertical-blue-up"
+        : "vertical-blue-down"
+      : "vertical"
+    : routeSection
+    ? isRoutePointingRight
+      ? "horizontal-blue-right"
+      : "horizontal-blue-left"
     : "horizontal";
 
-  const texture = useLoader(TextureLoader, `/img/chevron-${chevron}.png`);
+  const cachedTexture = useLoader(TextureLoader, `/img/chevron-${chevron}.png`);
+
+  const texture = useMemo(() => {
+    const clone = cachedTexture.clone();
+    clone.needsUpdate = true;
+    return clone;
+  }, [cachedTexture]);
 
   if (texture) {
     if (h > w) {
