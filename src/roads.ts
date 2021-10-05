@@ -108,6 +108,13 @@ export const roads = [
   {
     points: [
       [12, -12],
+      [2, -12],
+    ],
+    oneWay: true,
+  },
+  {
+    points: [
+      [2, -12],
       [-4, -12],
     ],
     oneWay: true,
