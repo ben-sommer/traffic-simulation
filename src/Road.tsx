@@ -53,8 +53,6 @@ function Road(props: any) {
     ? routeSectionInts[0][0] < routeSectionInts[1][0]
     : null;
 
-  if (routeSectionInts) console.log(routeSectionInts);
-
   const chevron = oneWay
     ? isVertical
       ? isPointingUp
