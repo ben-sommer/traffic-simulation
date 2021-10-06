@@ -1,12 +1,37 @@
 import "./App.css";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, extend, useFrame, useThree } from "@react-three/fiber";
 import Floor from "./Floor";
 import { Suspense, useRef, useState } from "react";
 import { roads, junctions, generateGraph } from "./roads";
 import Road from "./Road";
 import Junction from "./Junction";
 import Context from "./context/Context";
-import { PerspectiveCamera, OrbitControls } from "@react-three/drei";
+
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+
+extend({ OrbitControls });
+
+function CameraControls () {
+  const {
+    camera,
+    gl: { domElement },
+  } = useThree();
+  // Ref to the controls, so that we can update them on every frame using useFrame
+  const controls: any = useRef();
+  useFrame((state) => controls.current.update());
+
+  camera.up.set(0, 0, 1);
+
+  return (
+    // @ts-ignore
+    <orbitControls
+      minPolarAngle={-Math.PI / 2}
+      maxPolarAngle={Math.PI / 2}
+      ref={controls}
+      args={[camera, domElement]}
+    />
+  );
+};
 
 function App() {
   const size = 7;
@@ -43,14 +68,11 @@ function App() {
     }
   };
 
-  const myCamera = useRef();
-
   return (
     <div className="App">
       <div className="w-full h-screen">
         <Canvas className="w-full">
-          <PerspectiveCamera ref={myCamera} position={[0, 5, 5]} />
-          <OrbitControls camera={myCamera.current} />
+          <CameraControls />
           <Suspense fallback={null}>
             <Context.Provider
               value={{
