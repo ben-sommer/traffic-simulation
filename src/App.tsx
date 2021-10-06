@@ -16,7 +16,6 @@ function CameraControls () {
     camera,
     gl: { domElement },
   } = useThree();
-  // Ref to the controls, so that we can update them on every frame using useFrame
   const controls: any = useRef();
   useFrame((state) => controls.current.update());
 

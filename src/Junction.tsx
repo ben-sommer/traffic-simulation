@@ -44,14 +44,14 @@ function Junction(props: any) {
       <mesh
         onPointerEnter={() => setHover(true)}
         onPointerLeave={() => setHover(false)}
-        position={[(x - 1) * divisionSize, (y - 1) * divisionSize, 0.041]}
+        position={[(x - 1) * divisionSize, (y - 1) * divisionSize, 0.071]}
         onClick={() => state.junctionClick(point)}
       >
         <boxGeometry args={[divisionSize, divisionSize, 0.06]} />
         <meshStandardMaterial map={map} />
       </mesh>
-      <mesh position={[(x - 1) * divisionSize, (y - 1) * divisionSize, 0.039]}>
-        <boxGeometry args={[divisionSize + 0.04, divisionSize + 0.04, 0.061]} />
+      <mesh position={[(x - 1) * divisionSize, (y - 1) * divisionSize, 0.049]}>
+        <boxGeometry args={[divisionSize + 0.04, divisionSize + 0.04, 0.091]} />
         <meshStandardMaterial color={0x666666} />
       </mesh>
     </group>
